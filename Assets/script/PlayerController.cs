@@ -15,8 +15,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
 
+    private AudioSource audioSource;
+    public AudioClip jumpSound;
+    public AudioClip[] landingSounds;
+    private bool wasInAir = false;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -37,7 +43,17 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && groundedPlayer)
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
+            audioSource.PlayOneShot(jumpSound);
         }
+
+        if (wasInAir && groundedPlayer)
+        {
+            // Play a random landing sound from the array
+            AudioClip landingSound = landingSounds[Random.Range(0, landingSounds.Length)];
+            audioSource.PlayOneShot(landingSound);
+        }
+
+        wasInAir = !IsGrounded();
 
         playerVelocity.y += gravity * Time.deltaTime;
         characterController.Move(playerVelocity * Time.deltaTime);

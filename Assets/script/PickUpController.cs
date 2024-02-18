@@ -15,13 +15,19 @@ public class PickUpController : MonoBehaviour
 
     public float reachLenght = 2.0f;
 
+    public AudioClip pickupSound;
+    public AudioClip chargeSound;
+    public AudioClip throwSound;
+
     private GameObject heldObject = null;
     private float currentThrowForce;
     private bool isCharging = false;
+    private AudioSource audioSource;
 
     private void Awake()
     {
         chargeBarFill.fillAmount = 0;
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -49,10 +55,12 @@ public class PickUpController : MonoBehaviour
             {
                 TryPickupObject(hit.collider.gameObject);
                 pickupIndicator.enabled = false;
+        
             }
             else
             {
                 DropObject();
+
             }
         }
 
@@ -60,11 +68,14 @@ public class PickUpController : MonoBehaviour
         {
             isCharging = true;
             currentThrowForce = minThrowForce;
+            audioSource.PlayOneShot(chargeSound, 0.7f);
         }
 
         if (Input.GetKeyUp(KeyCode.Q) && isCharging)
         {
             ThrowObject();
+            audioSource.Stop();
+            audioSource.PlayOneShot(throwSound);
         }
     }
 
@@ -74,6 +85,7 @@ public class PickUpController : MonoBehaviour
         heldObject.GetComponent<Rigidbody>().isKinematic = true;
         heldObject.transform.position = grapPosition.position;
         heldObject.transform.parent = grapPosition;
+        audioSource.PlayOneShot(pickupSound);
     }
 
     private void ThrowObject()
@@ -83,7 +95,6 @@ public class PickUpController : MonoBehaviour
         heldObject.GetComponent<Rigidbody>().isKinematic = false;
         heldObject.transform.parent = null;
         heldObject.GetComponent<Rigidbody>().AddForce(transform.forward * currentThrowForce, ForceMode.VelocityChange);
-
         ResetAfterAction();
     }
 
@@ -93,6 +104,7 @@ public class PickUpController : MonoBehaviour
         
         heldObject.GetComponent<Rigidbody>().isKinematic = false;
         heldObject.transform.parent = null;
+        audioSource.Stop();
 
         ResetAfterAction();
     }

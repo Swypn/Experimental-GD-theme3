@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PickUpController : MonoBehaviour
 {
     public Transform grapPosition;
+    public Image chargeBarFill;
 
     public float minThrowForce = 5f;
     public float maxThrowForce = 20f;
@@ -14,6 +16,8 @@ public class PickUpController : MonoBehaviour
     private float currentThrowForce;
     private bool isCharging = false;
 
+ 
+
     void Update()
     {
         HandleInput();
@@ -22,7 +26,16 @@ public class PickUpController : MonoBehaviour
         {
             currentThrowForce += chargeSpeed * Time.deltaTime;
             currentThrowForce = Mathf.Min(currentThrowForce, maxThrowForce);
+
+            chargeBarFill.fillAmount = (currentThrowForce - minThrowForce) / (maxThrowForce - minThrowForce);
         }
+
+        else if (!isCharging)
+        {
+            // Reset the charge bar when not charging
+            chargeBarFill.fillAmount = 0;
+        }
+
     }
     private void HandleInput()
     {

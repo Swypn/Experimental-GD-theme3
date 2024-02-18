@@ -14,7 +14,7 @@ public class Target : MonoBehaviour
             ThrowingChallengeManager manager = FindObjectOfType<ThrowingChallengeManager>();
             if (manager != null)
             {
-                manager.TargetHit();
+                manager.TargetHit(gameObject);
             }
         }
     }

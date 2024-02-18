@@ -4,23 +4,34 @@ using UnityEngine;
 
 public class ThrowingChallengeManager : MonoBehaviour
 {
-    public List<GameObject> targets; // Assign all your target objects here in the Inspector
-    public GameObject door; // Assign the door or cube object that should disappear/move
-    public void TargetHit()
+    [System.Serializable]
+    public class RoomChallenge
     {
-        foreach (GameObject target in targets)
-        {
-            if (target.activeSelf)
-            {
-                return;
-            }
-        }
-
-        OpenDoor();
+        public List<GameObject> targets;
+        public GameObject door;
     }
 
-    void OpenDoor()
+    public List<RoomChallenge> challenges; // Assign in the Inspector
+
+    public void TargetHit(GameObject target)
     {
-        door.SetActive(false);
+        foreach (RoomChallenge challenge in challenges)
+        {
+            if (challenge.targets.Contains(target))
+            {
+                target.SetActive(false); // Deactivate the target
+                CheckRoomTargets(challenge);
+                break;
+            }
+        }
+    }
+
+    void CheckRoomTargets(RoomChallenge challenge)
+    {
+        foreach (GameObject target in challenge.targets)
+        {
+            if (target.activeSelf) return;
+        }
+        challenge.door.SetActive(false); // Open the door when all targets are hit
     }
 }

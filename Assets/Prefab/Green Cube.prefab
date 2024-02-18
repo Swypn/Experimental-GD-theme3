@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7736534409699129153}
   - component: {fileID: 7736534409699129182}
   - component: {fileID: 7736534409699129183}
+  - component: {fileID: 1589205139}
   m_Layer: 0
   m_Name: Green Cube
   m_TagString: Grabbable
@@ -133,3 +134,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1589205139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7736534409699129180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14ff6e14667890d48b4852e24f9f2234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brokenVersion: {fileID: 6238301854860286500, guid: 6ff28b9a2a397f9409528cde196d2c1f, type: 3}
+  breakForceThreshold: 20

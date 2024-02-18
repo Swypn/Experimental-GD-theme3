@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 535291286782617355}
   - component: {fileID: 535291286782617354}
   - component: {fileID: 535291286782617357}
+  - component: {fileID: 1355997672}
   m_Layer: 0
   m_Name: Blue Cube
   m_TagString: Grabbable
@@ -133,3 +134,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1355997672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535291286782617356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14ff6e14667890d48b4852e24f9f2234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brokenVersion: {fileID: 8136409631689843801, guid: b140f758600049240943b5a3eaad2d18, type: 3}
+  breakForceThreshold: 20

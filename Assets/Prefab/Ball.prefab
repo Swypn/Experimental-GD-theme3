@@ -146,4 +146,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14ff6e14667890d48b4852e24f9f2234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brokenVersion: {fileID: 0}
+  brokenVersion: {fileID: 1531128238364175858, guid: efe2d1368fd820147af9879c829586fc, type: 3}
+  breakForceThreshold: 20

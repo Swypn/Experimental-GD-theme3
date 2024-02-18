@@ -22,8 +22,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        bool isReallyGrounded = IsReallyGrounded();
-        groundedPlayer = characterController.isGrounded || isReallyGrounded; // Use OR to combine both checks
+        groundedPlayer = IsGrounded();// Use OR to combine both checks
         Debug.Log("Is Grounded: " + groundedPlayer);
         if (groundedPlayer && playerVelocity.y < 0)
         {
@@ -54,15 +53,25 @@ public class PlayerController : MonoBehaviour
         playerCamera.localEulerAngles = Vector3.right * cameraPitch;
     }
 
-    bool IsReallyGrounded()
+    bool IsGrounded()
     {
-        float extraHeight = 0.1f; // Extra height to check for ground
-        RaycastHit hit;
-        if (Physics.Raycast(characterController.bounds.center, Vector3.down, out hit, characterController.bounds.extents.y + extraHeight))
-        {
-            return hit.collider != null; // Ground is detected
-        }
-        return false; // Ground is not detected
+        float groundCheckDistance = 0.1f; // How far to check for the ground
+        Vector3 groundCheckPosition = transform.position + new Vector3(0, -characterController.height / 2, 0); // Position at the bottom of the character
+        float groundCheckRadius = characterController.radius * 0.9f; // Check sphere radius
+
+        // Use ~0 to consider all layers in the ground check
+        int layerMask = ~LayerMask.GetMask("Player");
+
+        bool isGrounded = Physics.CheckSphere(groundCheckPosition, groundCheckRadius, layerMask, QueryTriggerInteraction.Ignore);
+        return isGrounded;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Vector3 groundCheckPosition = transform.position + new Vector3(0, -characterController.height / 2, 0);
+        float groundCheckRadius = characterController.radius * 0.9f;
+        Gizmos.DrawWireSphere(groundCheckPosition, groundCheckRadius);
     }
 }
 

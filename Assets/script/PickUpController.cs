@@ -16,7 +16,10 @@ public class PickUpController : MonoBehaviour
     private float currentThrowForce;
     private bool isCharging = false;
 
- 
+    private void Awake()
+    {
+        chargeBarFill.fillAmount = 0;
+    }
 
     void Update()
     {
@@ -28,12 +31,6 @@ public class PickUpController : MonoBehaviour
             currentThrowForce = Mathf.Min(currentThrowForce, maxThrowForce);
 
             chargeBarFill.fillAmount = (currentThrowForce - minThrowForce) / (maxThrowForce - minThrowForce);
-        }
-
-        else if (!isCharging)
-        {
-            // Reset the charge bar when not charging
-            chargeBarFill.fillAmount = 0;
         }
 
     }
@@ -86,17 +83,27 @@ public class PickUpController : MonoBehaviour
 
     private void ThrowObject()
     {
-        heldObject.GetComponent<Rigidbody>().isKinematic = false;
-        heldObject.transform.parent = null;
-        heldObject.GetComponent<Rigidbody>().AddForce(transform.forward * currentThrowForce, ForceMode.VelocityChange);
+        if (heldObject != null) // Check if there's an object to throw
+        {
+            heldObject.GetComponent<Rigidbody>().isKinematic = false;
+            heldObject.transform.parent = null;
+            heldObject.GetComponent<Rigidbody>().AddForce(transform.forward * currentThrowForce, ForceMode.VelocityChange);
+            chargeBarFill.fillAmount = 0;
+        }
         heldObject = null;
         currentThrowForce = 0;
+        isCharging = false;
     }
 
     private void DropObject()
     {
-        heldObject.GetComponent<Rigidbody>().isKinematic = false;
-        heldObject.transform.parent = null;
-        heldObject = null;
+        if (heldObject != null)
+        {
+            heldObject.GetComponent<Rigidbody>().isKinematic = false;
+            heldObject.transform.parent = null;
+            heldObject = null;
+
+            chargeBarFill.fillAmount = 0;
+        }
     }
 }

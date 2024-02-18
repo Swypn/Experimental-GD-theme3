@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WinButton : MonoBehaviour
 {
-    public GameObject victoryUI; // Assign the UI element that indicates victory
-    public float interactionDistance = 2f; // Distance within which the player can interact with the button
+    public GameObject victoryUI; 
+    public float interactionDistance = 2f;
 
     private void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.E) && IsPlayerAimingAtButton())
         {
             WinGame();
@@ -44,6 +46,5 @@ public class WinButton : MonoBehaviour
     {
         victoryUI.SetActive(true);
         Debug.Log("Congratulations! You've won!");
-        // Additional victory logic here (e.g., load next level, show stats, etc.)
     }
 }

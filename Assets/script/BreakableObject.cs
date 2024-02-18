@@ -5,7 +5,7 @@ using UnityEngine;
 public class BreakableObject : MonoBehaviour
 {
     public GameObject brokenVersion;
-    public float breakVelocityThreshold = 7f;
+    public float breakForceThreshold = 50f;
     private Rigidbody rb;
     private void Awake()
     {
@@ -14,10 +14,14 @@ public class BreakableObject : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            return;
+        }
 
-        float velocity = rb.velocity.magnitude;
+        float impactForce = collision.relativeVelocity.magnitude * (collision.rigidbody != null ? collision.rigidbody.mass : 1);
 
-        if (velocity > breakVelocityThreshold)
+        if (impactForce > breakForceThreshold)
         {
             Instantiate(brokenVersion, transform.position, transform.rotation);
             Destroy(gameObject);

@@ -1431,7 +1431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brokenVersion: {fileID: 8136409631689843801, guid: b140f758600049240943b5a3eaad2d18, type: 3}
-  breakVelocityThreshold: 8
+  breakForceThreshold: 20
 --- !u!1 &1498762464 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3428983452137534001, guid: 6a39ade682df5e34793d8e8c60e03621, type: 3}
@@ -1450,7 +1450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brokenVersion: {fileID: 8443803013879670968, guid: 1e4bfa59a707c304498b8a686c585dd3, type: 3}
-  breakVelocityThreshold: 8
+  breakForceThreshold: 20
 --- !u!1 &1589205133 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7736534409699129180, guid: 1e36f534975f69648b6e522976591fb9, type: 3}
@@ -1469,7 +1469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brokenVersion: {fileID: 6238301854860286500, guid: 6ff28b9a2a397f9409528cde196d2c1f, type: 3}
-  breakVelocityThreshold: 8
+  breakForceThreshold: 20
 --- !u!1 &1641642359
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,7 +1556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brokenVersion: {fileID: 8997924215722462304, guid: ac326da3abcf8da41a9dea2ba3186467, type: 3}
-  breakVelocityThreshold: 10
+  breakForceThreshold: 20
 --- !u!1 &2113524711
 GameObject:
   m_ObjectHideFlags: 0
@@ -1858,7 +1858,7 @@ PrefabInstance:
       objectReference: {fileID: 1531128238364175858, guid: efe2d1368fd820147af9879c829586fc, type: 3}
     - target: {fileID: 3975006907959295965, guid: 7abf6a0fb0c9a394ba935362c0bd76ec, type: 3}
       propertyPath: breakForceThreshold
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3975006907959295965, guid: 7abf6a0fb0c9a394ba935362c0bd76ec, type: 3}
       propertyPath: breakVelocityThreshold

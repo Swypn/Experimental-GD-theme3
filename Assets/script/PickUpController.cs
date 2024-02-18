@@ -7,10 +7,13 @@ public class PickUpController : MonoBehaviour
 {
     public Transform grapPosition;
     public Image chargeBarFill;
+    public Image pickupIndicator;
 
     public float minThrowForce = 5f;
     public float maxThrowForce = 20f;
     public float chargeSpeed = 10f;
+
+    public float reachLenght = 2.0f;
 
     private GameObject heldObject = null;
     private float currentThrowForce;
@@ -36,11 +39,16 @@ public class PickUpController : MonoBehaviour
     }
     private void HandleInput()
     {
+        RaycastHit hit;
+        bool canPickUp = Physics.Raycast(transform.position, transform.forward, out hit, reachLenght) && hit.collider.CompareTag("Grabbable");
+        pickupIndicator.enabled = canPickUp && heldObject == null;       
+
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (heldObject == null)
+            if (!heldObject && canPickUp)
             {
-                TryPickupObject();
+                TryPickupObject(hit.collider.gameObject);
+                pickupIndicator.enabled = false;
             }
             else
             {
@@ -48,62 +56,52 @@ public class PickUpController : MonoBehaviour
             }
         }
 
-        // Start charging when Q is pressed
-        if (Input.GetKeyDown(KeyCode.Q) && heldObject != null)
+        if (Input.GetKeyDown(KeyCode.Q) && heldObject)
         {
             isCharging = true;
             currentThrowForce = minThrowForce;
         }
 
-        // Throw the object when Q is released
         if (Input.GetKeyUp(KeyCode.Q) && isCharging)
         {
-            isCharging = false;
             ThrowObject();
         }
     }
 
-    private void TryPickupObject()
+    private void TryPickupObject(GameObject objectToPickUp)
     {
-        RaycastHit hit;
-        Debug.DrawRay(transform.position, transform.forward * 2f, Color.red, 2f);
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 2f))
-        {
-            Debug.Log("Raycast hit: " + hit.collider.name); // To check what the raycast hits
-            if (hit.collider.gameObject.CompareTag("Grabbable"))
-            {
-                heldObject = hit.collider.gameObject;
-                heldObject.GetComponent<Rigidbody>().isKinematic = true; // Disable physics
-                heldObject.transform.position = grapPosition.position; // Move to grab point
-                heldObject.transform.parent = grapPosition; // Parent to the grab point
-                Debug.Log("Picked up: " + hit.collider.name);
-            }
-        }
+        heldObject = objectToPickUp;
+        heldObject.GetComponent<Rigidbody>().isKinematic = true;
+        heldObject.transform.position = grapPosition.position;
+        heldObject.transform.parent = grapPosition;
     }
 
     private void ThrowObject()
     {
-        if (heldObject != null) // Check if there's an object to throw
-        {
-            heldObject.GetComponent<Rigidbody>().isKinematic = false;
-            heldObject.transform.parent = null;
-            heldObject.GetComponent<Rigidbody>().AddForce(transform.forward * currentThrowForce, ForceMode.VelocityChange);
-            chargeBarFill.fillAmount = 0;
-        }
-        heldObject = null;
-        currentThrowForce = 0;
-        isCharging = false;
+        if (!heldObject) return;
+        
+        heldObject.GetComponent<Rigidbody>().isKinematic = false;
+        heldObject.transform.parent = null;
+        heldObject.GetComponent<Rigidbody>().AddForce(transform.forward * currentThrowForce, ForceMode.VelocityChange);
+
+        ResetAfterAction();
     }
 
     private void DropObject()
     {
-        if (heldObject != null)
-        {
-            heldObject.GetComponent<Rigidbody>().isKinematic = false;
-            heldObject.transform.parent = null;
-            heldObject = null;
+        if (!heldObject) return;
+        
+        heldObject.GetComponent<Rigidbody>().isKinematic = false;
+        heldObject.transform.parent = null;
 
-            chargeBarFill.fillAmount = 0;
-        }
+        ResetAfterAction();
+    }
+
+    private void ResetAfterAction()
+    {
+        heldObject = null;
+        chargeBarFill.fillAmount = 0;
+        currentThrowForce = 0;
+        isCharging = false;
     }
 }

@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public CharacterController characterController;
     public float speed = 5.0f;
-    public float mouseSensitivity = 100.0f;
+    public float mouseSensitivity = 1.0f;
     public Transform playerCamera;
     public float gravity = -9.81f;
     public float jumpHeight = 2.0f;
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
+  void Update()
     {
         groundedPlayer = IsGrounded();// Use OR to combine both checks
         Debug.Log("Is Grounded: " + groundedPlayer);

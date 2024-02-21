@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class HitCube : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] GameObject brokenPrefab;
 
-    // Update is called once per frame
-    void Update()
+    private void OnCollisionEnter(Collision collision)
     {
-        
+        if(collision.gameObject.CompareTag("Grabbable"))
+        {
+            Instantiate(brokenPrefab, transform.position, transform.rotation);
+            Destroy(gameObject);
+        }
     }
 }

@@ -118,6 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc358efb6a86a1d49abd9f51b1340ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  material: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   cubePerAxis: 8
   delay: 0.5
   force: 500

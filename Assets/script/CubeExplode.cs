@@ -6,11 +6,9 @@ public class CubeExplode : MonoBehaviour
 {
     [SerializeField] Material material;
     public int cubePerAxis = 8;
-    public float delay = 0.5f;
     public float force = 500f;
     public float radius = 3f;
     private int hits = 0;
-    bool cubeGenerated = false;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -19,7 +17,7 @@ public class CubeExplode : MonoBehaviour
             hits++;
             if(hits >= 2)
             {
-                Invoke("CreateCubes", delay);
+                CreateCubes();
                 DoorOpened();
             }
         }

@@ -28,8 +28,7 @@ public class PlayerController : MonoBehaviour
 
   void Update()
     {
-        groundedPlayer = IsGrounded();// Use OR to combine both checks
-        Debug.Log("Is Grounded: " + groundedPlayer);
+        groundedPlayer = IsGrounded();
         if (groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
@@ -48,7 +47,6 @@ public class PlayerController : MonoBehaviour
 
         if (wasInAir && groundedPlayer)
         {
-            // Play a random landing sound from the array
             AudioClip landingSound = landingSounds[Random.Range(0, landingSounds.Length)];
             audioSource.PlayOneShot(landingSound);
         }

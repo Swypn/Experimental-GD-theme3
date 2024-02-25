@@ -12,7 +12,7 @@ public class CubeExplode : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Grabbable"))
+        if (collision.gameObject.CompareTag("Metal"))
         {
             hits++;
             if(hits >= 2)
@@ -40,7 +40,6 @@ public class CubeExplode : MonoBehaviour
 
     void DoorOpened()
     {
-        Debug.Log("Open");
         GameObject door = GameObject.Find("Door 1");
         door.gameObject.SetActive(false);
     }

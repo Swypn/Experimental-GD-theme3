@@ -8,7 +8,7 @@ public class HitCube : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Grabbable"))
+        if(collision.gameObject.CompareTag("Metal"))
         {
             Instantiate(brokenPrefab, transform.position, transform.rotation);
             Destroy(gameObject);

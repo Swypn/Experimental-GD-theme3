@@ -14,6 +14,8 @@ public class PickUpController : MonoBehaviour
     [SerializeField] PhysicMaterial rubber;
     [SerializeField] PhysicMaterial metal;
 
+    [Header("---Persistent Ball---")]
+    [SerializeField] GameObject persistentBall;
     public Transform grapPosition;
     public Image chargeBarFill;
     public Image pickupIndicator;
@@ -29,7 +31,9 @@ public class PickUpController : MonoBehaviour
     public AudioClip throwSound;
 
     Material originalMaterial;
-    PhysicMaterial originalPhysicMaterial;
+    Collider persistentBallCollider;
+    Rigidbody persistentBallRb;
+    MeshRenderer persistentBallRenderer;
     private float rubberMass = 1;
     private float metalMass = 3;
     private bool isRKeyPressed = false;
@@ -42,6 +46,9 @@ public class PickUpController : MonoBehaviour
     {
         chargeBarFill.fillAmount = 0;
         audioSource = GetComponent<AudioSource>();
+        persistentBallCollider = persistentBall.GetComponent<Collider>();
+        persistentBallRb = persistentBall.GetComponent<Rigidbody>();
+        persistentBallRenderer = persistentBall.GetComponent<MeshRenderer>();
     }
 
     void Update()
@@ -60,7 +67,9 @@ public class PickUpController : MonoBehaviour
     private void HandleInput()
     {
         RaycastHit hit;
-        bool canPickUp = Physics.Raycast(transform.position, transform.forward, out hit, reachLenght) && hit.collider.CompareTag("Grabbable");
+        bool canPickUp = Physics.Raycast(transform.position, transform.forward, out hit, reachLenght) && (hit.collider.CompareTag("Grabbable") 
+            || hit.collider.CompareTag("Metal") || hit.collider.CompareTag("Rubber"));
+
         pickupIndicator.enabled = canPickUp && heldObject == null;       
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -73,15 +82,23 @@ public class PickUpController : MonoBehaviour
             else
             {
                 DropObject();
-
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.E) && !heldObject)
         {
             isRKeyPressed = !isRKeyPressed;
 
-            if (isRKeyPressed && !heldObject && canPickUp)
+            if(isRKeyPressed)
+            {
+                ChangeMaterial();
+            }
+            else
+            {
+                RestoreMaterial();
+            }
+
+            /*if (isRKeyPressed && !heldObject && canPickUp)
             {
                 ChangePhysicsMaterial(hit.collider.gameObject);
                 ChangeMeshRendererMaterial(hit.collider.gameObject);
@@ -90,7 +107,14 @@ public class PickUpController : MonoBehaviour
             {
                 RestorePhysicsMaterial(hit.collider.gameObject);
                 RestoreMeshRendererMaterial(hit.collider.gameObject);
-            }
+            }*/
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            //Instantiate(metalBall, grapPosition.position, Quaternion.identity);
+            persistentBall.transform.position = grapPosition.position;
+            persistentBallRb.velocity = Vector3.zero;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && heldObject)
@@ -155,52 +179,70 @@ public class PickUpController : MonoBehaviour
         isCharging = false;
     }
 
-    private void ChangePhysicsMaterial(GameObject obj)
+    //For persistentaBall
+    private void ChangeMaterial()
     {
-        Collider objectCollider = obj.GetComponent<Collider>();
-        Rigidbody rb = obj.GetComponent<Rigidbody>();
-        if (objectCollider != null)
-        {
-            objectCollider.material = rubber;
-        }
-
-        if (rb != null)
-        {
-            rb.mass = rubberMass;
-        }
+        persistentBallRenderer.material = rubberMaterial;
+        persistentBallRb.mass = rubberMass;
+        persistentBallCollider.material = rubber;
+        persistentBall.tag = "Rubber";
     }
 
-    private void RestorePhysicsMaterial(GameObject obj)
+    private void RestoreMaterial()
     {
-        Collider objectCollider = obj.GetComponent<Collider>();
-        Rigidbody rb = obj.GetComponent<Rigidbody>();
-
-        if (objectCollider != null)
-        {
-            objectCollider.material = metal;
-        }
-
-        if (rb != null)
-        {
-            rb.mass = metalMass;
-        }
+        persistentBallRenderer.material = metalMaterial;
+        persistentBallRb.mass = metalMass;
+        persistentBallCollider.material = metal;
+        persistentBall.tag = "Metal";
     }
 
-    private void ChangeMeshRendererMaterial(GameObject obj)
-    {
-        MeshRenderer objectRenderer = obj.GetComponent<MeshRenderer>();
-        if (objectRenderer != null)
-        {
-            objectRenderer.material = rubberMaterial;
-        }
-    }
+    //For general GameObject
+    //private void ChangePhysicsMaterial(GameObject obj)
+    //{
+    //    Collider objectCollider = obj.GetComponent<Collider>();
+    //    Rigidbody rb = obj.GetComponent<Rigidbody>();
+    //    if (objectCollider != null)
+    //    {
+    //        objectCollider.material = rubber;
+    //    }
 
-    private void RestoreMeshRendererMaterial(GameObject obj)
-    {
-        MeshRenderer objectRenderer = obj.GetComponent<MeshRenderer>();
-        if (objectRenderer != null)
-        {
-            objectRenderer.material = metalMaterial;
-        }
-    }
+    //    if (rb != null)
+    //    {
+    //        rb.mass = rubberMass;
+    //    }
+    //}
+
+    //private void RestorePhysicsMaterial(GameObject obj)
+    //{
+    //    Collider objectCollider = obj.GetComponent<Collider>();
+    //    Rigidbody rb = obj.GetComponent<Rigidbody>();
+
+    //    if (objectCollider != null)
+    //    {
+    //        objectCollider.material = metal;
+    //    }
+
+    //    if (rb != null)
+    //    {
+    //        rb.mass = metalMass;
+    //    }
+    //}
+
+    //private void ChangeMeshRendererMaterial(GameObject obj)
+    //{
+    //    MeshRenderer objectRenderer = obj.GetComponent<MeshRenderer>();
+    //    if (objectRenderer != null)
+    //    {
+    //        objectRenderer.material = rubberMaterial;
+    //    }
+    //}
+
+    //private void RestoreMeshRendererMaterial(GameObject obj)
+    //{
+    //    MeshRenderer objectRenderer = obj.GetComponent<MeshRenderer>();
+    //    if (objectRenderer != null)
+    //    {
+    //        objectRenderer.material = metalMaterial;
+    //    }
+    //}
 }

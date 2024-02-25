@@ -9,24 +9,24 @@ public class PlayerController : MonoBehaviour
     public float mouseSensitivity = 1.0f;
     public Transform playerCamera;
     public float gravity = -9.81f;
-    public float jumpHeight = 2.0f;
+    //public float jumpHeight = 2.0f;
 
     private float cameraPitch = 0.0f;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
 
-    private AudioSource audioSource;
-    public AudioClip jumpSound;
-    public AudioClip[] landingSounds;
+    //private AudioSource audioSource;
+    //public AudioClip jumpSound;
+    //public AudioClip[] landingSounds;
     private bool wasInAir = false;
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-  void Update()
+    void Update()
     {
         groundedPlayer = IsGrounded();
         if (groundedPlayer && playerVelocity.y < 0)
@@ -39,17 +39,17 @@ public class PlayerController : MonoBehaviour
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         characterController.Move(move * Time.deltaTime * speed);
 
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
-        {
-            playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
-            audioSource.PlayOneShot(jumpSound);
-        }
+        //if (Input.GetButtonDown("Jump") && groundedPlayer)
+        //{
+        //    playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
+        //    audioSource.PlayOneShot(jumpSound);
+        //}
 
-        if (wasInAir && groundedPlayer)
-        {
-            AudioClip landingSound = landingSounds[Random.Range(0, landingSounds.Length)];
-            audioSource.PlayOneShot(landingSound);
-        }
+        //if (wasInAir && groundedPlayer)
+        //{
+        //    AudioClip landingSound = landingSounds[Random.Range(0, landingSounds.Length)];
+        //    audioSource.PlayOneShot(landingSound);
+        //}
 
         wasInAir = !IsGrounded();
 
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
     bool IsGrounded()
     {
-        float groundCheckDistance = 0.1f; // How far to check for the ground
+        //float groundCheckDistance = 0.1f; // How far to check for the ground
         Vector3 groundCheckPosition = transform.position + new Vector3(0, -characterController.height / 2, 0); // Position at the bottom of the character
         float groundCheckRadius = characterController.radius * 0.9f; // Check sphere radius
 

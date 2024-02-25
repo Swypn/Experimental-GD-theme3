@@ -4,16 +4,31 @@ using UnityEngine;
 
 public class CubeExplode : MonoBehaviour
 {
-    [SerializeField] Material material;
+    [Header("---Material---")]
+    [SerializeField] Material brokenMatrial;
+    [SerializeField] Material originalMaterial;
+    MeshRenderer renderer;
+
+    [Header("---Door---")]
+    [SerializeField] GameObject door;
+
+    [Header("---Explode Factors---")]
     public int cubePerAxis = 8;
+    public int sizeFactor = 2;
     public float force = 500f;
     public float radius = 3f;
     private int hits = 0;
+
+    private void Awake()
+    {
+        renderer = GetComponent<MeshRenderer>();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Metal"))
         {
+            renderer.material = brokenMatrial;
             hits++;
             if(hits >= 2)
             {
@@ -40,8 +55,7 @@ public class CubeExplode : MonoBehaviour
 
     void DoorOpened()
     {
-        GameObject door = GameObject.Find("Door 1");
-        door.gameObject.SetActive(false);
+        door.SetActive(false);
     }
 
     void CreateCube(Vector3 coordinate)
@@ -49,9 +63,9 @@ public class CubeExplode : MonoBehaviour
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         
         Renderer rd = cube.GetComponent<Renderer>();
-        rd.material = material;
+        rd.material = originalMaterial;
 
-        cube.transform.localScale = transform.localScale / cubePerAxis;
+        cube.transform.localScale = transform.localScale / cubePerAxis / sizeFactor;
 
         Vector3 firstCube = transform.position - transform.localScale / 2 + transform.localScale / 2;
         cube.transform.localPosition = firstCube + Vector3.Scale(coordinate, cube.transform.localScale);

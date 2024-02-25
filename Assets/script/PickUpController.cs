@@ -13,6 +13,8 @@ public class PickUpController : MonoBehaviour
     [Header("---PhysicMaterial---")]
     [SerializeField] PhysicMaterial rubber;
     [SerializeField] PhysicMaterial metal;
+    [SerializeField] float rubberMass = 1;
+    [SerializeField] float metalMass = 3;
 
     [Header("---Persistent Ball---")]
     [SerializeField] GameObject persistentBall;
@@ -34,8 +36,7 @@ public class PickUpController : MonoBehaviour
     Collider persistentBallCollider;
     Rigidbody persistentBallRb;
     MeshRenderer persistentBallRenderer;
-    private float rubberMass = 1;
-    private float metalMass = 3;
+
     private bool isRKeyPressed = false;
     private GameObject heldObject = null;
     private float currentThrowForce;
@@ -85,7 +86,7 @@ public class PickUpController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && !heldObject)
+        if (Input.GetKeyDown(KeyCode.Mouse2) && !heldObject)
         {
             isRKeyPressed = !isRKeyPressed;
 

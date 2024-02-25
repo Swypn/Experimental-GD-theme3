@@ -7,7 +7,13 @@ public class PickUpController : MonoBehaviour
 {
     [Header("---Materials---")]
     [SerializeField] Material transparentMaterial;
-    //[SerializeField] Material rubberMaterial;
+    [SerializeField] Material rubberMaterial;
+    [SerializeField] Material metalMaterial;
+
+    [Header("---PhysicMaterial---")]
+    [SerializeField] PhysicMaterial rubber;
+    [SerializeField] PhysicMaterial metal;
+
     public Transform grapPosition;
     public Image chargeBarFill;
     public Image pickupIndicator;
@@ -23,6 +29,10 @@ public class PickUpController : MonoBehaviour
     public AudioClip throwSound;
 
     Material originalMaterial;
+    PhysicMaterial originalPhysicMaterial;
+    private float rubberMass = 1;
+    private float metalMass = 3;
+    private bool isRKeyPressed = false;
     private GameObject heldObject = null;
     private float currentThrowForce;
     private bool isCharging = false;
@@ -53,7 +63,7 @@ public class PickUpController : MonoBehaviour
         bool canPickUp = Physics.Raycast(transform.position, transform.forward, out hit, reachLenght) && hit.collider.CompareTag("Grabbable");
         pickupIndicator.enabled = canPickUp && heldObject == null;       
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (!heldObject && canPickUp)
             {
@@ -67,14 +77,30 @@ public class PickUpController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && heldObject)
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            isRKeyPressed = !isRKeyPressed;
+
+            if (isRKeyPressed && !heldObject && canPickUp)
+            {
+                ChangePhysicsMaterial(hit.collider.gameObject);
+                ChangeMeshRendererMaterial(hit.collider.gameObject);
+            }
+            else if(!isRKeyPressed && !heldObject && canPickUp)
+            {
+                RestorePhysicsMaterial(hit.collider.gameObject);
+                RestoreMeshRendererMaterial(hit.collider.gameObject);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1) && heldObject)
         {
             isCharging = true;
             currentThrowForce = minThrowForce;
             audioSource.PlayOneShot(chargeSound, 0.7f);
         }
 
-        if (Input.GetKeyUp(KeyCode.Q) && isCharging)
+        if (Input.GetKeyUp(KeyCode.Mouse1) && isCharging)
         {
             ThrowObject();
             audioSource.Stop();
@@ -127,5 +153,54 @@ public class PickUpController : MonoBehaviour
         chargeBarFill.fillAmount = 0;
         currentThrowForce = 0;
         isCharging = false;
+    }
+
+    private void ChangePhysicsMaterial(GameObject obj)
+    {
+        Collider objectCollider = obj.GetComponent<Collider>();
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (objectCollider != null)
+        {
+            objectCollider.material = rubber;
+        }
+
+        if (rb != null)
+        {
+            rb.mass = rubberMass;
+        }
+    }
+
+    private void RestorePhysicsMaterial(GameObject obj)
+    {
+        Collider objectCollider = obj.GetComponent<Collider>();
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+
+        if (objectCollider != null)
+        {
+            objectCollider.material = metal;
+        }
+
+        if (rb != null)
+        {
+            rb.mass = metalMass;
+        }
+    }
+
+    private void ChangeMeshRendererMaterial(GameObject obj)
+    {
+        MeshRenderer objectRenderer = obj.GetComponent<MeshRenderer>();
+        if (objectRenderer != null)
+        {
+            objectRenderer.material = rubberMaterial;
+        }
+    }
+
+    private void RestoreMeshRendererMaterial(GameObject obj)
+    {
+        MeshRenderer objectRenderer = obj.GetComponent<MeshRenderer>();
+        if (objectRenderer != null)
+        {
+            objectRenderer.material = metalMaterial;
+        }
     }
 }

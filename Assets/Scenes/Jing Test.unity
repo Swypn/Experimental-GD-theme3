@@ -2225,6 +2225,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transparentMaterial: {fileID: 2100000, guid: 8a23e6772a5ddd74499fbe7ede59abb8, type: 2}
+  rubberMaterial: {fileID: 2100000, guid: 5047e1cd234540644b11c1c7fc8a9f1d, type: 2}
+  metalMaterial: {fileID: 2100000, guid: 33f2e54601c9ff345a2718e67e9fa83e, type: 2}
+  rubber: {fileID: 13400000, guid: b660dcc4d339ddc4fb920e1b33e761d6, type: 2}
+  metal: {fileID: 13400000, guid: 3c5f908bbc70e2d42a1249525571c7ae, type: 2}
   grapPosition: {fileID: 2113524712}
   chargeBarFill: {fileID: 105571373}
   pickupIndicator: {fileID: 304925611}

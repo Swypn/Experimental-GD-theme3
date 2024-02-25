@@ -7,7 +7,7 @@ public class CubeExplode : MonoBehaviour
     [Header("---Material---")]
     [SerializeField] Material brokenMatrial;
     [SerializeField] Material originalMaterial;
-    MeshRenderer renderer;
+    MeshRenderer meshRenderer;
 
     [Header("---Door---")]
     [SerializeField] GameObject door;
@@ -21,14 +21,14 @@ public class CubeExplode : MonoBehaviour
 
     private void Awake()
     {
-        renderer = GetComponent<MeshRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Metal"))
         {
-            renderer.material = brokenMatrial;
+            meshRenderer.material = brokenMatrial;
             hits++;
             if(hits >= 2)
             {

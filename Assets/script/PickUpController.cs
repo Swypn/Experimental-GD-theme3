@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class PickUpController : MonoBehaviour
 {
+    [Header("---Materials---")]
+    [SerializeField] Material transparentMaterial;
+    //[SerializeField] Material rubberMaterial;
     public Transform grapPosition;
     public Image chargeBarFill;
     public Image pickupIndicator;
@@ -19,6 +22,7 @@ public class PickUpController : MonoBehaviour
     public AudioClip chargeSound;
     public AudioClip throwSound;
 
+    Material originalMaterial;
     private GameObject heldObject = null;
     private float currentThrowForce;
     private bool isCharging = false;
@@ -55,7 +59,6 @@ public class PickUpController : MonoBehaviour
             {
                 TryPickupObject(hit.collider.gameObject);
                 pickupIndicator.enabled = false;
-        
             }
             else
             {
@@ -85,16 +88,25 @@ public class PickUpController : MonoBehaviour
         heldObject.GetComponent<Rigidbody>().isKinematic = true;
         heldObject.transform.position = grapPosition.position;
         heldObject.transform.parent = grapPosition;
+        originalMaterial = heldObject.GetComponent<MeshRenderer>().material;
+        heldObject.GetComponent<MeshRenderer>().material = transparentMaterial;
         audioSource.PlayOneShot(pickupSound);
     }
 
     private void ThrowObject()
     {
         if (!heldObject) return;
-        
-        heldObject.GetComponent<Rigidbody>().isKinematic = false;
-        heldObject.transform.parent = null;
-        heldObject.GetComponent<Rigidbody>().AddForce(transform.forward * currentThrowForce, ForceMode.VelocityChange);
+
+        Rigidbody objectRigidbody = heldObject.GetComponent<Rigidbody>();
+        if (objectRigidbody)
+        {
+            objectRigidbody.isKinematic = false;
+            heldObject.transform.parent = null;
+            float adjustedForce = currentThrowForce / objectRigidbody.mass;
+            objectRigidbody.AddForce(transform.forward * adjustedForce, ForceMode.VelocityChange);
+            heldObject.GetComponent<MeshRenderer>().material = originalMaterial;
+        }
+
         ResetAfterAction();
     }
 
@@ -104,8 +116,8 @@ public class PickUpController : MonoBehaviour
         
         heldObject.GetComponent<Rigidbody>().isKinematic = false;
         heldObject.transform.parent = null;
+        heldObject.GetComponent<MeshRenderer>().material = originalMaterial;
         audioSource.Stop();
-
         ResetAfterAction();
     }
 

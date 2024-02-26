@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class PlayerController : MonoBehaviour
     public Transform playerCamera;
     public float gravity = -9.81f;
     //public float jumpHeight = 2.0f;
+    public Scrollbar sensitivityScrollbar;
+    bool isPaused = false;
+    bool ableToMove = true;
 
     private float cameraPitch = 0.0f;
     private Vector3 playerVelocity;
@@ -18,7 +22,7 @@ public class PlayerController : MonoBehaviour
     //private AudioSource audioSource;
     //public AudioClip jumpSound;
     //public AudioClip[] landingSounds;
-    private bool wasInAir = false;
+    //private bool wasInAir = false;
 
     void Start()
     {
@@ -27,6 +31,17 @@ public class PlayerController : MonoBehaviour
     }
 
     void Update()
+    {
+        if(ableToMove)
+        {
+            Move();
+        }
+
+        ShowScrollBar();
+        ExitGame();
+    }
+
+    private void Move()
     {
         groundedPlayer = IsGrounded();
         if (groundedPlayer && playerVelocity.y < 0)
@@ -51,7 +66,7 @@ public class PlayerController : MonoBehaviour
         //    audioSource.PlayOneShot(landingSound);
         //}
 
-        wasInAir = !IsGrounded();
+        //wasInAir = !IsGrounded();
 
         playerVelocity.y += gravity * Time.deltaTime;
         characterController.Move(playerVelocity * Time.deltaTime);
@@ -65,6 +80,32 @@ public class PlayerController : MonoBehaviour
         cameraPitch = Mathf.Clamp(cameraPitch, -90f, 90f);
 
         playerCamera.localEulerAngles = Vector3.right * cameraPitch;
+    }
+
+    void ShowScrollBar()
+    {
+        if (Input.GetKeyDown(KeyCode.P) && !isPaused)
+        {
+            sensitivityScrollbar.gameObject.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            isPaused = true;
+            ableToMove = false;
+        }
+        else if(Input.GetKeyDown(KeyCode.P) && isPaused)
+        {
+            sensitivityScrollbar.gameObject.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            isPaused = false;
+            ableToMove = true;
+        }
+    }
+
+    void ExitGame()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     bool IsGrounded()
@@ -87,5 +128,13 @@ public class PlayerController : MonoBehaviour
         float groundCheckRadius = characterController.radius * 0.9f;
         Gizmos.DrawWireSphere(groundCheckPosition, groundCheckRadius);
     }
+
+    public void SetMouseSensitivity()
+    {
+        float mappedSensitivity = Mathf.Lerp(100f, 1000f, sensitivityScrollbar.value);
+        mouseSensitivity = mappedSensitivity;
+    }
+    
+    
 }
 

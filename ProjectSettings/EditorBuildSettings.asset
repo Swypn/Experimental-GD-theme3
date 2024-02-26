@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Jing Test.unity
+    guid: 928d3e3316e6e12438ca3cdf662cc9e9
   m_configObjects: {}

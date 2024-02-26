@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float mouseSensitivity = 1.0f;
     public Transform playerCamera;
     public float gravity = -9.81f;
+    public float groundCheckRadius = 0.2f;
     //public float jumpHeight = 2.0f;
     public Scrollbar sensitivityScrollbar;
     bool isPaused = false;
@@ -47,6 +48,11 @@ public class PlayerController : MonoBehaviour
         if (groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
+        }
+
+        if (!groundedPlayer)
+        {
+            playerVelocity.y += gravity * Time.deltaTime;
         }
 
         float moveX = Input.GetAxis("Horizontal");
@@ -110,9 +116,7 @@ public class PlayerController : MonoBehaviour
 
     bool IsGrounded()
     {
-        //float groundCheckDistance = 0.1f; // How far to check for the ground
         Vector3 groundCheckPosition = transform.position + new Vector3(0, -characterController.height / 2, 0); // Position at the bottom of the character
-        float groundCheckRadius = characterController.radius * 0.9f; // Check sphere radius
 
         // Use ~0 to consider all layers in the ground check
         int layerMask = ~LayerMask.GetMask("Player");
@@ -125,7 +129,6 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Vector3 groundCheckPosition = transform.position + new Vector3(0, -characterController.height / 2, 0);
-        float groundCheckRadius = characterController.radius * 0.9f;
         Gizmos.DrawWireSphere(groundCheckPosition, groundCheckRadius);
     }
 

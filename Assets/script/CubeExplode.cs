@@ -5,12 +5,18 @@ using UnityEngine;
 public class CubeExplode : MonoBehaviour
 {
     [Header("---Material---")]
+    [SerializeField] Material transparentMaterial;
     [SerializeField] Material brokenMatrial;
     [SerializeField] Material originalMaterial;
     MeshRenderer meshRenderer;
 
     [Header("---Door---")]
     [SerializeField] GameObject door;
+
+    [Header("---Audio---")]
+    [SerializeField] AudioData crackingSFX;
+    [SerializeField] AudioData breakSFX;
+    [SerializeField] AudioData unlockSFX;
 
     [Header("---Explode Factors---")]
     public int cubePerAxis = 8;
@@ -30,10 +36,16 @@ public class CubeExplode : MonoBehaviour
         {
             meshRenderer.material = brokenMatrial;
             hits++;
-            if(hits >= 2)
+            if(hits == 1)
+            {
+                AudioManager.Instance.PlaySFX(crackingSFX);
+            }
+            if (hits >= 2)
             {
                 CreateCubes();
+                AudioManager.Instance.PlaySFX(breakSFX);
                 DoorOpened();
+                AudioManager.Instance.PlaySFX(unlockSFX);
             }
         }
     }
@@ -46,11 +58,12 @@ public class CubeExplode : MonoBehaviour
             {
                 for (int z = 0; z < cubePerAxis; z++)
                 {
-                    CreateCube(new Vector3(x, y, z));
+                    StartCoroutine(CreateCube(new Vector3(x, y, z)));
                 }
             }
         }
-        Destroy(gameObject);
+        meshRenderer.material = transparentMaterial;
+        gameObject.GetComponent<BoxCollider>().enabled = false;
     }
 
     void DoorOpened()
@@ -58,7 +71,7 @@ public class CubeExplode : MonoBehaviour
         door.SetActive(false);
     }
 
-    void CreateCube(Vector3 coordinate)
+    IEnumerator CreateCube(Vector3 coordinate)
     {
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         
@@ -72,5 +85,11 @@ public class CubeExplode : MonoBehaviour
 
         Rigidbody rb = cube.AddComponent<Rigidbody>();
         rb.AddExplosionForce(force, transform.position, radius);
+
+        yield return new WaitForSeconds(2.5f);
+        Destroy(cube);
+
+        yield return null;
+        Destroy(gameObject);
     }
 }

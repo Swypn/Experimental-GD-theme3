@@ -14,6 +14,11 @@ public class AudioManager : Singleton<AudioManager>
         sFXPlayer.PlayOneShot(audioData.audioClip, audioData.volume); 
     }
 
+    public void Shutdown()
+    {
+        sFXPlayer.Stop();
+    }
+
     public void PlayerRandomSFX(AudioData audioData)
     {
         sFXPlayer.pitch = Random.Range(MIN_PITCH, MAX_PITCH);

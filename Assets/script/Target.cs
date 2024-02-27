@@ -5,13 +5,14 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     [SerializeField] GameObject door;
-
+    [SerializeField] AudioData unlockSFX;
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Grabbable") || other.gameObject.CompareTag("Metal") || other.gameObject.CompareTag("Rubber"))
         {
             door.SetActive(false);
-            gameObject.SetActive(false); // Deactivate the target
+            gameObject.SetActive(false); 
+            AudioManager.Instance.PlaySFX(unlockSFX);
 
             // Notify the ThrowingLevelManager that this target was hit
             //ThrowingChallengeManager manager = FindObjectOfType<ThrowingChallengeManager>();

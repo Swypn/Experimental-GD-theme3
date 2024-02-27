@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PickUpController : MonoBehaviour
 {
+    public bool IsMetalBall => isMetalBall;
+
     [Header("---Materials---")]
     [SerializeField] Material transparentMaterial;
     [SerializeField] Material rubberMaterial;
@@ -21,16 +23,16 @@ public class PickUpController : MonoBehaviour
     public Transform grapPosition;
     public Image chargeBarFill;
     public Image pickupIndicator;
-
     public float minThrowForce = 5f;
     public float maxThrowForce = 20f;
     public float chargeSpeed = 10f;
-
     public float reachLenght = 2.0f;
 
-    public AudioClip pickupSound;
-    public AudioClip chargeSound;
-    public AudioClip throwSound;
+    [Header("---Audio---")]
+    [SerializeField] AudioData pickupSFX;
+    [SerializeField] AudioData chargeSFX;
+    [SerializeField] AudioData convertSFX;
+    [SerializeField] AudioData teleportSFX;
 
     Material originalMaterial;
     Collider persistentBallCollider;
@@ -41,12 +43,11 @@ public class PickUpController : MonoBehaviour
     private GameObject heldObject = null;
     private float currentThrowForce;
     private bool isCharging = false;
-    private AudioSource audioSource;
+    private bool isMetalBall = true;
 
     private void Awake()
     {
         chargeBarFill.fillAmount = 0;
-        audioSource = GetComponent<AudioSource>();
         persistentBallCollider = persistentBall.GetComponent<Collider>();
         persistentBallRb = persistentBall.GetComponent<Rigidbody>();
         persistentBallRenderer = persistentBall.GetComponent<MeshRenderer>();
@@ -93,10 +94,12 @@ public class PickUpController : MonoBehaviour
             if(isRKeyPressed)
             {
                 ChangeMaterial();
+                AudioManager.Instance.PlaySFX(convertSFX);
             }
             else
             {
                 RestoreMaterial();
+                AudioManager.Instance.PlaySFX(convertSFX);
             }
 
             /*if (isRKeyPressed && !heldObject && canPickUp)
@@ -116,20 +119,20 @@ public class PickUpController : MonoBehaviour
             //Instantiate(metalBall, grapPosition.position, Quaternion.identity);
             persistentBall.transform.position = grapPosition.position;
             persistentBallRb.velocity = Vector3.zero;
+            AudioManager.Instance.PlaySFX(teleportSFX);
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && heldObject)
         {
             isCharging = true;
             currentThrowForce = minThrowForce;
-            audioSource.PlayOneShot(chargeSound, 0.7f);
+            AudioManager.Instance.PlaySFX(chargeSFX);
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse1) && isCharging)
         {
             ThrowObject();
-            audioSource.Stop();
-            audioSource.PlayOneShot(throwSound);
+            AudioManager.Instance.Shutdown();
         }
     }
 
@@ -141,7 +144,7 @@ public class PickUpController : MonoBehaviour
         heldObject.transform.parent = grapPosition;
         originalMaterial = heldObject.GetComponent<MeshRenderer>().material;
         heldObject.GetComponent<MeshRenderer>().material = transparentMaterial;
-        audioSource.PlayOneShot(pickupSound);
+        AudioManager.Instance.PlaySFX(pickupSFX);
     }
 
     private void ThrowObject()
@@ -168,7 +171,6 @@ public class PickUpController : MonoBehaviour
         heldObject.GetComponent<Rigidbody>().isKinematic = false;
         heldObject.transform.parent = null;
         heldObject.GetComponent<MeshRenderer>().material = originalMaterial;
-        audioSource.Stop();
         ResetAfterAction();
     }
 
@@ -187,6 +189,7 @@ public class PickUpController : MonoBehaviour
         persistentBallRb.mass = rubberMass;
         persistentBallCollider.material = rubber;
         persistentBall.tag = "Rubber";
+        isMetalBall = false;
     }
 
     private void RestoreMaterial()
@@ -195,7 +198,10 @@ public class PickUpController : MonoBehaviour
         persistentBallRb.mass = metalMass;
         persistentBallCollider.material = metal;
         persistentBall.tag = "Metal";
+        isMetalBall = true;
     }
+
+
 
     //For general GameObject
     //private void ChangePhysicsMaterial(GameObject obj)

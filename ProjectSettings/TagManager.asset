@@ -7,6 +7,7 @@ TagManager:
   - Grabbable
   - Metal
   - Rubber
+  - Ground
   layers:
   - Default
   - TransparentFX

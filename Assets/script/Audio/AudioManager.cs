@@ -5,6 +5,7 @@ using UnityEngine;
 public class AudioManager : Singleton<AudioManager>
 {
     [SerializeField] AudioSource sFXPlayer;
+    [SerializeField] AudioSource bGMPlayer;
 
     const float MIN_PITCH = 0.9f;
     const float MAX_PITCH = 1.1f;
@@ -17,6 +18,11 @@ public class AudioManager : Singleton<AudioManager>
     public void Shutdown()
     {
         sFXPlayer.Stop();
+    }
+
+    public void PlayBGM(AudioData audioData)
+    {
+        bGMPlayer.PlayOneShot(audioData.audioClip, audioData.volume);
     }
 
     public void PlayerRandomSFX(AudioData audioData)

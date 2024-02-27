@@ -9,6 +9,8 @@ public class VictoryButton : MonoBehaviour
     [SerializeField] GameObject victoryUI;
     [SerializeField] float duration = 3f;
     WaitForSeconds waitForDuration;
+    [SerializeField] AudioData edSFX;
+    private bool hasPlayerSFX = false;
 
     private void Awake()
     {
@@ -17,10 +19,12 @@ public class VictoryButton : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Grabbable") || other.gameObject.CompareTag("Metal") || other.gameObject.CompareTag("Rubber") || other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Metal") && !hasPlayerSFX)
         {
             door.SetActive(false);
             victoryUI.SetActive(true);
+            AudioManager.Instance.PlayBGM(edSFX);
+            hasPlayerSFX = true;
             StartCoroutine(nameof(CloseVictoryUI));
         }
     }
@@ -29,10 +33,5 @@ public class VictoryButton : MonoBehaviour
     {
         yield return waitForDuration;
         victoryUI.SetActive(false);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        door.SetActive(true);
     }
 }
